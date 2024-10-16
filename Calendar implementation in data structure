@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int isLeapYear(int year) {
+    if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)))
+        return 1; 
+    else
+        return 0; 
+}
+
+
+void printMonth(int year, int month, int specialEvents[][3], int numEvents) {
+ 
+    int daysInMonth[] = {31, 28 + isLeapYear(year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+ 
+    char *months[] = {"January", "February", "March", "April", "May", "June",
+                      "July", "August", "September", "October", "November", "December"};
+
+   
+    char *days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+
+
+    int firstDay = (year + year/4 - year/100 + year/400 + (13 * month + 8) / 5 + 1) % 7;
+
+    printf("\n%s %d\n", months[month-1], year);
+    printf("Sun Mon Tue Wed Thu Fri Sat\n");
+
+   
+    for (int i = 0; i < firstDay; i++)
+        printf("    ");
+
+
+    for (int day = 1; day <= daysInMonth[month-1]; day++) {
+ 
+        int hasEvent = 0;
+        for (int i = 0; i < numEvents; i++) {
+            if (specialEvents[i][0] == month && specialEvents[i][1] == day) {
+                hasEvent = 1;
+                break;
+            }
+        }
+
+       
+        if (hasEvent)
+            printf("😊   ");
+        else
+            printf("%3d ", day);
+
+
+        if ((firstDay + day) % 7 == 0)
+            printf("\n");
+    }
+
+    printf("\n");
+}
+
+int main() {
+    int year, startMonth, endMonth, numEvents;
+
+  
+    printf("Enter year: ");
+    scanf("%d", &year);
+
+    
+    printf("Enter starting month (1-12): ");
+    scanf("%d", &startMonth);
+
+
+    printf("Enter ending month (1-12): ");
+    scanf("%d", &endMonth);
+
+  
+    printf("Enter number of special events: ");
+    scanf("%d", &numEvents);
+
+
+    if (year <= 0 || startMonth < 1 || startMonth > 12 || endMonth < 1 || endMonth > 12 || startMonth > endMonth) {
+        printf("Invalid input!\n");
+        return 1;
+    }
+
+
+    int specialEvents[numEvents][3];
+
+
+    printf("Enter special events (in the format: month day):\n");
+    for (int i = 0; i < numEvents; i++) {
+        scanf("%d %d", &specialEvents[i][0], &specialEvents[i][1]);
+        specialEvents[i][2] = 1; 
+    }
+
+ 
+    for (int month = startMonth; month <= endMonth; month++) {
+        printMonth(year, month, specialEvents, numEvents);
+    }
+
+    return 0;
+}
